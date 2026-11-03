@@ -1,0 +1,1244 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio cá nhân của Huỳnh Đoàn Quang Mạnh, sinh viên Công nghệ Thông tin tại UTH.">
+    <title>Quang Mạnh | Personal Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .projects {
+            background: var(--bg-secondary, transparent);
+        }
+
+        .projects-intro {
+            max-width: 700px;
+            margin: 0 auto 40px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 25px;
+        }
+
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            border: 1px solid var(--border-color, rgba(0, 200, 180, .25));
+            border-radius: 18px;
+            background: var(--card-bg, rgba(15, 25, 45, .7));
+            transition: transform .3s ease, border-color .3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary-color, #20c9b5);
+        }
+
+        .project-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .project-category {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-color, #20c9b5);
+            background: rgba(32, 201, 181, .12);
+        }
+
+        .project-number {
+            font-size: 13px;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        .project-card h3 {
+            margin-bottom: 12px;
+            font-size: 22px;
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+
+        .project-tag {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color, rgba(32, 201, 181, .2));
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .project-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: auto;
+            padding-top: 18px;
+            border-top: 1px solid var(--border-color, rgba(255,255,255,.1));
+        }
+
+        .project-type {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .project-detail-btn {
+            border: 1px solid var(--primary-color, #20c9b5);
+            background: transparent;
+            color: var(--primary-color, #20c9b5);
+            border-radius: 7px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .25s ease;
+        }
+
+        .project-detail-btn:hover {
+            background: var(--primary-color, #20c9b5);
+            color: #06131c;
+        }
+
+        .project-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            padding: 25px;
+            background: rgba(0, 0, 0, .78);
+            backdrop-filter: blur(7px);
+            overflow-y: auto;
+        }
+
+        .project-modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .project-modal-content {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 35px auto;
+            padding: 35px;
+            border: 1px solid var(--border-color, rgba(32, 201, 181, .3));
+            border-radius: 16px;
+            background: var(--bg-color, #0b1224);
+            color: var(--text-color, #e8edf8);
+            box-shadow: 0 20px 70px rgba(0,0,0,.35);
+        }
+
+        .project-modal-close {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border-color, rgba(255,255,255,.15));
+            border-radius: 50%;
+            background: transparent;
+            color: var(--text-color, white);
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .project-modal-close:hover {
+            background: var(--primary-color, #20c9b5);
+            color: #06131c;
+        }
+
+        .project-modal-content h2 {
+            font-size: 26px;
+            margin: 15px 45px 12px 0;
+        }
+
+        .project-modal-content h3 {
+            margin: 22px 0 10px;
+            font-size: 16px;
+        }
+
+        .project-modal-content p,
+        .project-modal-content li {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .project-modal-content ul {
+            padding-left: 22px;
+        }
+
+        .project-modal-content li {
+            margin-bottom: 6px;
+        }
+
+        .project-modal-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .project-modal-section {
+            padding-top: 5px;
+        }
+
+        .project-note {
+            margin-top: 18px;
+            padding: 14px;
+            border-left: 3px solid var(--primary-color, #20c9b5);
+            background: rgba(32, 201, 181, .07);
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .project-card {
+                padding: 20px;
+            }
+
+            .project-modal {
+                padding: 10px;
+            }
+
+            .project-modal-content {
+                padding: 25px 20px;
+                margin: 15px auto;
+            }
+
+            .project-modal-content h2 {
+                font-size: 22px;
+            }
+
+            .project-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="container navbar">
+            <a href="#home" class="logo">QUANG<span>MANH.</span></a>
+
+            <nav class="nav-menu" id="navMenu">
+                <a href="#home" class="nav-link active">Trang chủ</a>
+                <a href="#about" class="nav-link">Giới thiệu</a>
+                <a href="#goals" class="nav-link">Mục tiêu</a>
+                <a href="#skills" class="nav-link">Kỹ năng</a>
+                <a href="#projects" class="nav-link">Dự án</a>
+                <a href="#journey" class="nav-link">Hoạt động</a>
+                <a href="#achievements" class="nav-link">Thành tích</a>
+                <a href="#interests" class="nav-link">Sở thích</a>
+                <a href="#contact" class="nav-link">Liên hệ</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button id="themeToggle" class="theme-toggle" type="button"
+                    aria-label="Chuyển đổi giao diện">☀</button>
+                <button id="menuToggle" class="menu-toggle" type="button"
+                    aria-label="Mở menu">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- TRANG CHỦ -->
+        <section id="home" class="hero section">
+            <div class="container hero-content">
+
+                <div class="hero-text">
+                    <p class="hero-greeting">XIN CHÀO, MÌNH LÀ</p>
+
+                    <h1>HUỲNH ĐOÀN<br>QUANG <span>MẠNH.</span></h1>
+
+                    <h2>Sinh viên Công nghệ Thông tin</h2>
+
+                    <p class="hero-description">
+                        Hiện tại, mình là sinh viên năm 3 ngành Công nghệ Thông tin
+                        tại Trường Đại học Giao thông Vận tải TP.HCM (UTH), niên khóa
+                        2024 - 2028. Mình yêu thích lĩnh vực Công nghệ thông tin,
+                        đặc biệt là tư duy thuật toán, cấu trúc dữ liệu và cách
+                        xây dựng những hệ thống phần mềm hiệu quả.
+                    </p>
+
+                    <p class="hero-slogan">
+                        “Điều đáng sợ nhất không phải là thất bại mà là ta
+                        chưa bao giờ dám thử dù chỉ một lần.”
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a href="#about" class="btn btn-primary">Khám phá bản thân</a>
+                        <a href="#contact" class="btn btn-outline">Liên hệ với mình</a>
+                    </div>
+                </div>
+
+                <div class="hero-image">
+                    <div class="hero-image-frame">
+                        <img src="images/avatar.jpg" alt="Ảnh chân dung Quang Mạnh">
+                    </div>
+                    <div class="hero-image-decoration"></div>
+                    <div class="hero-tag">IT STUDENT | UTH</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- GIỚI THIỆU -->
+        <section id="about" class="section about">
+            <div class="container">
+
+                <div class="section-heading">
+                    <p class="section-subtitle">GET TO KNOW ME</p>
+                    <h2>Giới thiệu <span>bản thân</span></h2>
+                </div>
+
+                <div class="about-content">
+
+                    <div class="about-gallery">
+                        <img src="images/daily.jpg"
+                            alt="Ảnh đời thường của Quang Mạnh"
+                            class="about-image-main">
+                    </div>
+
+                    <div class="about-text">
+                        <h3>Chào bạn, mình là Quang Mạnh!</h3>
+
+                        <p>
+                            Trong quá trình học tập, mình đã tích lũy kiến thức và
+                            thực hành với các công nghệ như C++, Python, HTML, CSS,
+                            JavaScript và SQL. Bên cạnh đó, mình cũng có cơ hội
+                            tiếp cận với lập trình hướng đối tượng, cơ sở dữ liệu,
+                            mạng máy tính và phân tích, thiết kế thuật toán
+                            thông qua các môn học và đồ án.
+                        </p>
+
+                        <p>
+                            Mình định hướng phát triển theo lĩnh vực
+                            <strong>Software Engineering</strong>, trước mắt mong
+                            muốn thử sức ở vị trí <strong>Backend Developer Intern</strong>
+                            để trau dồi kỹ năng lập trình và tìm hiểu cách xây dựng
+                            hệ thống phía máy chủ. Về lâu dài, mình mong muốn tiếp tục
+                            học tập chuyên sâu hơn trong lĩnh vực Công nghệ thông tin
+                            và phát triển năng lực nghiên cứu.
+                        </p>
+
+                        <p>
+                            Mình luôn sẵn sàng học hỏi, chủ động tiếp nhận thử thách
+                            và không ngừng hoàn thiện bản thân qua từng dự án
+                            cũng như trải nghiệm thực tế.
+                        </p>
+
+                        <div class="personal-info">
+                            <div>
+                                <strong>Họ và tên</strong>
+                                <span>Huỳnh Đoàn Quang Mạnh</span>
+                            </div>
+
+                            <div>
+                                <strong>Trường học</strong>
+                                <span>Đại học Giao thông Vận tải TP.HCM</span>
+                            </div>
+
+                            <div>
+                                <strong>Chuyên ngành</strong>
+                                <span>Công nghệ Thông tin</span>
+                            </div>
+
+                            <div>
+                                <strong>Địa điểm</strong>
+                                <span>Thạnh Mỹ Tây, TP. Hồ Chí Minh</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- MỤC TIÊU -->
+        <section id="goals" class="section goals">
+            <div class="container">
+
+                <div class="section-heading">
+                    <p class="section-subtitle">MY DIRECTION</p>
+                    <h2>Mục tiêu <span>nghề nghiệp</span></h2>
+                </div>
+
+                <div class="goals-grid">
+
+                    <article class="goal-card">
+                        <div class="goal-icon">01</div>
+                        <h3>Định hướng hiện tại</h3>
+                        <p>
+                            Mình muốn thử sức trong lĩnh vực Software Engineering,
+                            đặc biệt là Backend Engineering, để vận dụng kiến thức
+                            lập trình và tìm hiểu sâu hơn về cách xây dựng hệ thống.
+                        </p>
+                    </article>
+
+                    <article class="goal-card">
+                        <div class="goal-icon">02</div>
+                        <h3>Mục tiêu học tập</h3>
+                        <p>
+                            Cố gắng duy trì GPA tốt, nâng cao trình độ tiếng Anh,
+                            củng cố kiến thức chuyên ngành và tích lũy kinh nghiệm
+                            thông qua các dự án cũng như cơ hội thực tập.
+                        </p>
+                    </article>
+
+                    <article class="goal-card">
+                        <div class="goal-icon">03</div>
+                        <h3>Định hướng tương lai</h3>
+                        <p>
+                            Sau khi tốt nghiệp, mình mong muốn tiếp tục học lên
+                            bậc Thạc sĩ Công nghệ Thông tin, hướng đến con đường
+                            nghiên cứu và giảng dạy tại môi trường đại học.
+                        </p>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- KỸ NĂNG -->
+        <section id="skills" class="section skills">
+            <div class="container">
+
+                <div class="section-heading">
+                    <p class="section-subtitle">WHAT I CAN DO</p>
+                    <h2>Kỹ năng <span>của mình</span></h2>
+                </div>
+
+                <div class="skills-content">
+
+                    <div class="skills-intro">
+                        <h3>Kiến thức và công cụ</h3>
+
+                        <p>
+                            Trong quá trình học tập, mình đã tiếp xúc với nhiều
+                            ngôn ngữ lập trình và công cụ công nghệ. Mình có nền
+                            tảng khá ở HTML, CSS, JavaScript, SQL và Python;
+                            đồng thời đang tiếp tục rèn luyện C++, GitHub
+                            và Cisco Packet Tracer.
+                        </p>
+
+                        <p>
+                            Điểm mạnh của mình là tư duy logic và khả năng tính
+                            toán. Mình cũng đang tập trung cải thiện kỹ năng
+                            phân tích, thiết kế hệ thống và khả năng triển khai
+                            các giải pháp phần mềm.
+                        </p>
+                    </div>
+
+                    <div class="skills-list">
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>HTML / CSS</span>
+                                <span>Khá</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--level: 80%"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>JavaScript</span>
+                                <span>Khá</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--level: 70%"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>SQL</span>
+                                <span>Khá</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--level: 70%"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>Python</span>
+                                <span>Khá</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--level: 70%"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>C++</span>
+                                <span>Trung bình</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--level: 50%"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span>GitHub / Cisco Packet Tracer</span>
+                                <span>Trung bình</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="--level: 50%"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DỰ ÁN -->
+        <section id="projects" class="section projects">
+            <div class="container">
+
+                <div class="section-heading">
+                    <p class="section-subtitle">MY ACADEMIC PROJECTS</p>
+                    <h2>Dự án <span>nổi bật</span></h2>
+                </div>
+
+                <p class="projects-intro">
+                    Một số dự án học thuật mình đã thực hiện trong quá trình
+                    học tập tại trường, tập trung vào cơ sở dữ liệu, cấu trúc
+                    dữ liệu và phân tích, thiết kế giải thuật.
+                </p>
+
+                <div class="projects-grid">
+
+                    <article class="project-card">
+                        <div class="project-top">
+                            <span class="project-category">Hệ quản trị cơ sở dữ liệu</span>
+                            <span class="project-number">01 / DATABASE</span>
+                        </div>
+
+                        <h3>Patient Management System</h3>
+
+                        <p class="project-description">
+                            Ứng dụng quản lý bệnh nhân, hồ sơ bệnh án và phòng bệnh.
+                            Dự án tập trung thực hành giao dịch cơ sở dữ liệu,
+                            xử lý đồng thời và các hiện tượng đọc dữ liệu trong SQL Server.
+                        </p>
+
+                        <div class="project-tags">
+                            <span class="project-tag">Python</span>
+                            <span class="project-tag">Tkinter</span>
+                            <span class="project-tag">SQL Server</span>
+                            <span class="project-tag">Transaction</span>
+                        </div>
+
+                        <div class="project-footer">
+                            <span class="project-type">● Academic Project</span>
+                            <button class="project-detail-btn" type="button"
+                                data-project="project1">Chi tiết →</button>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-top">
+                            <span class="project-category">Cấu trúc dữ liệu và giải thuật</span>
+                            <span class="project-number">02 / DSA</span>
+                        </div>
+
+                        <h3>Schedule Management System</h3>
+
+                        <p class="project-description">
+                            Chương trình quản lý lịch học và thời khóa biểu bằng C++,
+                            sử dụng cây nhị phân tìm kiếm (BST) để tổ chức,
+                            tra cứu và xử lý thông tin lớp học.
+                        </p>
+
+                        <div class="project-tags">
+                            <span class="project-tag">C++</span>
+                            <span class="project-tag">Binary Search Tree</span>
+                            <span class="project-tag">Recursion</span>
+                        </div>
+
+                        <div class="project-footer">
+                            <span class="project-type">● Group Project</span>
+                            <button class="project-detail-btn" type="button"
+                                data-project="project2">Chi tiết →</button>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-top">
+                            <span class="project-category">Phân tích và thiết kế giải thuật</span>
+                            <span class="project-number">03 / ALGORITHM</span>
+                        </div>
+
+                        <h3>Student Management System</h3>
+
+                        <p class="project-description">
+                            Hệ thống quản lý sinh viên ứng dụng kỹ thuật băm (Hashing),
+                            kết hợp Separate Chaining và Dynamic Rehashing
+                            nhằm tối ưu quá trình tìm kiếm dữ liệu.
+                        </p>
+
+                        <div class="project-tags">
+                            <span class="project-tag">Python</span>
+                            <span class="project-tag">MySQL</span>
+                            <span class="project-tag">Hash Table</span>
+                            <span class="project-tag">Rehashing</span>
+                        </div>
+
+                        <div class="project-footer">
+                            <span class="project-type">● Academic Project</span>
+                            <button class="project-detail-btn" type="button"
+                                data-project="project3">Chi tiết →</button>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CHI TIẾT DỰ ÁN 1 -->
+        <div class="project-modal" id="project1" aria-hidden="true">
+            <div class="project-modal-content" role="dialog" aria-modal="true"
+                aria-labelledby="project1-title">
+
+                <button class="project-modal-close" type="button"
+                    aria-label="Đóng cửa sổ">&times;</button>
+
+                <span class="project-category">DATABASE MANAGEMENT</span>
+                <h2 id="project1-title">Patient Management System</h2>
+
+                <p>
+                    Hệ thống quản lý bệnh nhân được xây dựng bằng Python,
+                    Tkinter và SQL Server, mô phỏng việc quản lý thông tin
+                    bệnh nhân, phòng bệnh và hồ sơ bệnh án.
+                </p>
+
+                <div class="project-modal-tags">
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">Tkinter</span>
+                    <span class="project-tag">SQL Server</span>
+                    <span class="project-tag">pyodbc</span>
+                </div>
+
+                <div class="project-modal-section">
+                    <h3>CHỨC NĂNG CHÍNH</h3>
+                    <ul>
+                        <li>Thêm, xóa, cập nhật và tìm kiếm thông tin bệnh nhân.</li>
+                        <li>Quản lý phòng bệnh, số giường và hồ sơ bệnh án.</li>
+                        <li>Thực hiện cập nhật dữ liệu thông qua Stored Procedure.</li>
+                        <li>Mô phỏng thao tác truy cập dữ liệu đồng thời.</li>
+                    </ul>
+                </div>
+
+                <div class="project-modal-section">
+                    <h3>KIẾN THỨC ÁP DỤNG</h3>
+                    <ul>
+                        <li><strong>Transaction:</strong> Quản lý các giao dịch cơ sở dữ liệu.</li>
+                        <li><strong>COMMIT / ROLLBACK:</strong> Xác nhận hoặc hoàn tác thay đổi.</li>
+                        <li><strong>Dirty Read:</strong> Tìm hiểu tình huống đọc dữ liệu chưa được xác nhận.</li>
+                        <li><strong>Non-Repeatable Read:</strong> Minh họa sự thay đổi kết quả khi dữ liệu được cập nhật bởi giao dịch khác.</li>
+                        <li><strong>Threading:</strong> Mô phỏng các thao tác đồng thời.</li>
+                    </ul>
+                </div>
+
+                <div class="project-modal-section">
+                    <h3>KẾT QUẢ ĐẠT ĐƯỢC</h3>
+                    <p>
+                        Qua dự án, mình hiểu rõ hơn cách tổ chức dữ liệu,
+                        sử dụng giao dịch và xử lý các tình huống khi nhiều
+                        người dùng cùng truy cập cơ sở dữ liệu. Đây cũng là
+                        kiến thức nền tảng hữu ích cho định hướng Backend.
+                    </p>
+                </div>
+
+                <p class="project-note">
+                    Dự án học thuật thuộc học phần Hệ quản trị cơ sở dữ liệu.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- CHI TIẾT DỰ ÁN 2 -->
+        <div class="project-modal" id="project2" aria-hidden="true">
+            <div class="project-modal-content" role="dialog" aria-modal="true"
+                aria-labelledby="project2-title">
+
+                <button class="project-modal-close" type="button"
+                    aria-label="Đóng cửa sổ">&times;</button>
+
+                <span class="project-category">DATA STRUCTURES & ALGORITHMS</span>
+                <h2 id="project2-title">Schedule Management System</h2>
+
+                <p>
+                    Chương trình quản lý lịch học và thời khóa biểu được
+                    xây dựng bằng C++, sử dụng cây nhị phân tìm kiếm (BST)
+                    để tổ chức và quản lý thông tin lớp học.
+                </p>
+
+                <div class="project-modal-tags">
+                    <span class="project-tag">C++</span>
+                    <span class="project-tag">Binary Search Tree</span>
+                    <span class="project-tag">Recursion</span>
+                </div>
+
+                <div class="project-modal-section">
+                    <h3>CHỨC NĂNG CHÍNH</h3>
+                    <ul>
+                        <li>Thêm và xóa thông tin lớp học.</li>
+                        <li>Tìm kiếm lớp học theo mã học phần.</li>
+                        <li>Hiển thị danh sách lớp học và thời khóa biểu.</li>
+                        <li>Thống kê số lượng lớp học trong hệ thống.</li>
+                    </ul>
+                </div>
+
+                <div class="project-modal-section">
+                    <h3>KIẾN THỨC ÁP DỤNG</h3>
+                    <ul>
+                        <li><strong>Binary Search Tree:</strong> Tổ chức dữ liệu theo khóa.</li>
+                        <li><strong>Insert / Delete:</strong> Thêm và xóa node trong cây.</li>
+                        <li><strong>Search:</strong> Tìm kiếm thông tin trong cây.</li>
+                        <li><strong>In-order Traversal:</strong> Duyệt cây theo thứ tự khóa.</li>
+                        <li><strong>Recursion:</strong> Triển khai các thao tác trên cây bằng đệ quy.</li>
+                    </ul>
+                </div>
+
+                <div class="project-modal-section">
+                    <h3>KẾT QUẢ ĐẠT ĐƯỢC</h3>
+                    <p>
+                        Dự án giúp mình hiểu rõ hơn về cấu trúc cây nhị phân,
+                        cách triển khai các thao tác cơ bản và phân tích
+                        độ phức tạp của thuật toán tìm kiếm, thêm và xóa dữ liệu.
+                    </p>
+                </div>
+
+                <p class="project-note">
+                    Dự án nhóm thuộc học phần Cấu trúc dữ liệu và giải thuật.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- CHI TIẾT DỰ ÁN 3 -->
+        <div class="project-modal" id="project3" aria-hidden="true">
+            <div class="project-modal-content" role="dialog" aria-modal="true"
+                aria-labelledby="project3-title">
+
+                <button class="project-modal-close" type="button"
+                    aria-label="Đóng cửa sổ">&times;</button>
+
+                <span class="project-category">ALGORITHM ANALYSIS</span>
+                <h2 id="project3-title">Student Management System</h2>
+
+                <p>
+                    Hệ thống quản lý sinh viên được xây dựng bằng Python
+                    và MySQL, ứng dụng bảng băm (Hash Table) để tổ chức,
+                    lưu trữ và tìm kiếm thông tin sinh viên theo MSSV.
+                </p>
+
+                <div class="project-modal-tags">
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">MySQL</span>
+                    <span class="project-tag">Hash Table</span>
+                    <span class="project-tag">Rehashing</span>
+                </div>
+
+                <div class="project-modal-section">
+                    <h3>CHỨC NĂNG CHÍNH</h3>
+                    <ul>
+                        <li>Thêm, xóa và cập nhật thông tin sinh viên.</li>
+                        <li>Tìm kiếm sinh viên theo mã số sinh viên.</li>
+                        <li>Lưu trữ và quản lý dữ liệu bằng MySQL.</li>
+                        <li>Thử nghiệm và so sánh hiệu năng các phương pháp tìm kiếm.</li>
+                    </ul>
+                </div>
+
+                <div class="project-modal-section">
+                    <h3>KIẾN THỨC ÁP DỤNG</h3>
+                    <ul>
+                        <li><strong>Hash Function:</strong> Chuyển đổi khóa thành chỉ số trong bảng băm.</li>
+                        <li><strong>Separate Chaining:</strong> Xử lý va chạm bằng danh sách liên kết.</li>
+                        <li><strong>Dynamic Rehashing:</strong> Mở rộng bảng băm khi cần thiết.</li>
+                        <li><strong>Performance Testing:</strong> Đo và so sánh thời gian thực thi thuật toán.</li>
+                    </ul>
+                </div>
+
+                <div class="project-modal-section">
+                    <h3>KẾT QUẢ ĐẠT ĐƯỢC</h3>
+                    <p>
+                        Qua dự án, mình hiểu hơn về cách thiết kế hàm băm,
+                        xử lý va chạm và mở rộng bảng băm. Đồng thời,
+                        mình rèn luyện khả năng đánh giá hiệu năng thuật toán
+                        và lựa chọn cấu trúc dữ liệu phù hợp với bài toán.
+                    </p>
+                </div>
+
+                <p class="project-note">
+                    Dự án học thuật thuộc học phần Phân tích và thiết kế giải thuật.
+                </p>
+
+            </div>
+        </div>
+
+        <!-- HOẠT ĐỘNG -->
+        <section id="journey" class="section journey">
+            <div class="container">
+
+                <div class="section-heading">
+                    <p class="section-subtitle">MY DEVELOPMENT</p>
+                    <h2>Hoạt động <span>phát triển</span></h2>
+                </div>
+
+                <div class="timeline">
+
+                    <article class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">2024 – 2028</span>
+                            <h3>Đại học – Công nghệ Thông tin</h3>
+                            <p>
+                                Theo học ngành Công nghệ Thông tin tại Trường Đại học
+                                Giao thông Vận tải TP. Hồ Chí Minh (UTH). Trong quá trình
+                                học tập, mình từng bước xây dựng nền tảng kiến thức về
+                                lập trình, cấu trúc dữ liệu và giải thuật, cơ sở dữ liệu,
+                                mạng máy tính cùng các lĩnh vực chuyên ngành khác.
+                                Bên cạnh đó, mình cũng tích cực thực hành và vận dụng
+                                kiến thức đã học vào các bài tập, đồ án nhằm nâng cao
+                                kỹ năng chuyên môn và khả năng giải quyết vấn đề.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">Hoạt động ngoại khóa</span>
+                            <h3>Câu lạc bộ và các giải đấu cờ vua</h3>
+                            <p>
+                                Tham gia sinh hoạt câu lạc bộ và nhiều giải đấu cờ vua.
+                                Quá trình này giúp mình rèn luyện tư duy chiến lược,
+                                phân tích tình huống, dự đoán các khả năng và đưa ra
+                                quyết định trong điều kiện giới hạn thời gian.
+                                Đây cũng là những kỹ năng hữu ích khi giải quyết vấn đề trong IT.
+                            </p>
+                            <img src="images/chess-club.jpg"
+                                alt="Hoạt động câu lạc bộ cờ vua"
+                                class="timeline-image">
+                        </div>
+                    </article>
+
+                    <article class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">Trải nghiệm thực tế</span>
+                            <h3>Trải nghiệm công việc hướng dẫn cờ vua</h3>
+                            <p>
+                                Từng thử sức với công việc hướng dẫn cờ vua tại trung tâm.
+                                Trải nghiệm này giúp mình rèn luyện khả năng giao tiếp,
+                                diễn đạt vấn đề và kiên nhẫn khi truyền đạt kiến thức.
+                            </p>
+                        </div>
+                    </article>
+
+                    <article class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <span class="timeline-date">Mục tiêu năm 2026</span>
+                            <h3>Ôn luyện tiếng Anh – IELTS 6.5</h3>
+                            <p>
+                                Đang ôn luyện tiếng Anh và đặt mục tiêu đạt IELTS 6.5
+                                trong năm 2026. Mình xem đây là bước chuẩn bị quan trọng
+                                để tiếp cận tài liệu chuyên ngành và chuẩn bị cho
+                                định hướng học tập sau đại học.
+                            </p>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- THÀNH TÍCH -->
+        <section id="achievements" class="section achievements">
+            <div class="container">
+
+                <div class="section-heading">
+                    <p class="section-subtitle">MY MILESTONES</p>
+                    <h2>Thành tích <span>nổi bật</span></h2>
+                    <p>
+                        Những kết quả đáng nhớ trong học tập và hoạt động
+                        thể thao, phản ánh quá trình nỗ lực và rèn luyện của mình.
+                    </p>
+                </div>
+
+                <div class="academic-achievement">
+                    <div class="academic-heading">
+                        <span class="achievement-symbol">A</span>
+                        <div>
+                            <h3>Kết quả học tập nổi bật</h3>
+                            <p>Một số học phần đạt điểm A</p>
+                        </div>
+                    </div>
+
+                    <div class="subject-grid">
+
+                        <div class="subject-card">
+                            <span class="subject-number">01</span>
+                            <h4>Cấu trúc dữ liệu và giải thuật</h4>
+                            <span class="grade">Điểm A</span>
+                        </div>
+
+                        <div class="subject-card">
+                            <span class="subject-number">02</span>
+                            <h4>Toán rời rạc</h4>
+                            <span class="grade">Điểm A</span>
+                        </div>
+
+                        <div class="subject-card">
+                            <span class="subject-number">03</span>
+                            <h4>Xác suất thống kê</h4>
+                            <span class="grade">Điểm A</span>
+                        </div>
+
+                        <div class="subject-card">
+                            <span class="subject-number">04</span>
+                            <h4>Phân tích thiết kế giải thuật</h4>
+                            <span class="grade">Điểm A</span>
+                        </div>
+
+                    </div>
+
+                    <p class="academic-note">
+                        Những học phần này giúp mình củng cố nền tảng toán học,
+                        khả năng suy luận và tư duy logic – những yếu tố quan trọng
+                        trong việc học tập và giải quyết vấn đề thuộc lĩnh vực IT.
+                    </p>
+                </div>
+
+                <div class="chess-achievements">
+                    <h3>Thành tích cờ vua</h3>
+
+                    <div class="achievement-grid">
+
+                        <article class="achievement-card">
+                            <img src="images/chess-2024.jpg"
+                                alt="Huy chương Vàng đồng đội cấp tỉnh năm 2024">
+
+                            <div class="achievement-info">
+                                <span class="achievement-year">2024</span>
+                                <h4>Huy chương Vàng đồng đội cấp tỉnh</h4>
+                                <p>
+                                    Một dấu mốc đáng nhớ trong quá trình
+                                    tham gia thi đấu cờ vua.
+                                </p>
+                            </div>
+                        </article>
+
+                        <article class="achievement-card">
+                            <img src="images/chess-2025.jpg"
+                                alt="Huy chương Vàng cấp Viện SHAPE năm 2025">
+
+                            <div class="achievement-info">
+                                <span class="achievement-year">2025</span>
+                                <h4>Huy chương Vàng cấp Viện SHAPE</h4>
+                                <p>
+                                    Thành tích tại hoạt động thể thao
+                                    của UTH năm 2025.
+                                </p>
+                            </div>
+                        </article>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <section id="interests" class="section interests">
+            <div class="container">
+
+                <div class="section-heading">
+                    <p class="section-subtitle">BEYOND TECHNOLOGY</p>
+                    <h2>Sở thích <span>cá nhân</span></h2>
+                    <p>
+                        Những hoạt động giúp mình duy trì năng lượng,
+                        khám phá bản thân và cân bằng giữa học tập với cuộc sống.
+                    </p>
+                </div>
+
+                <div class="interests-grid">
+
+                    <article class="interest-card">
+                        <div class="interest-icon">♟</div>
+                        <h3>Cờ vua</h3>
+                        <p>
+                            Mình yêu thích việc phân tích thế cờ, xây dựng chiến lược
+                            và tìm kiếm nước đi tối ưu. Cờ vua cũng khơi gợi sự tò mò
+                            của mình về thuật toán và cách xây dựng các chess engine.
+                        </p>
+                    </article>
+
+                    <article class="interest-card">
+                        <div class="interest-icon">⌁</div>
+                        <h3>Bơi lội</h3>
+                        <p>
+                            Giúp mình rèn luyện sức khỏe, thư giãn và lấy lại
+                            năng lượng sau những giờ học tập.
+                        </p>
+                    </article>
+
+                    <article class="interest-card">
+                        <div class="interest-icon">🏸</div>
+                        <h3>Cầu lông</h3>
+                        <p>
+                            Một hoạt động vận động yêu thích, giúp mình giải tỏa
+                            căng thẳng và có thêm thời gian kết nối với bạn bè.
+                        </p>
+                    </article>
+
+                    <article class="interest-card">
+                        <div class="interest-icon">♫</div>
+                        <h3>Piano</h3>
+                        <p>
+                            Mình yêu thích âm nhạc và xem piano như một cách
+                            thư giãn, cân bằng giữa công việc và cuộc sống.
+                        </p>
+                    </article>
+
+                </div>
+
+                <div class="personal-note">
+                    <p>
+                        “Mình tin rằng phát triển bản thân không chỉ nằm ở
+                        kiến thức chuyên môn mà còn đến từ những trải nghiệm
+                        và hoạt động trong cuộc sống.”
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- LIÊN HỆ -->
+        <section id="contact" class="section contact">
+            <div class="container">
+
+                <div class="section-heading">
+                    <p class="section-subtitle">GET IN TOUCH</p>
+                    <h2>Kết nối <span>với mình</span></h2>
+                    <p>
+                        Cảm ơn bạn đã dành thời gian tìm hiểu về mình.
+                        Hy vọng chúng ta sẽ có cơ hội kết nối và chia sẻ
+                        những điều thú vị.
+                    </p>
+                </div>
+
+                <div class="contact-content">
+
+                    <div class="contact-info">
+
+                        <div class="contact-item">
+                            <span class="contact-icon">@</span>
+                            <div>
+                                <h3>Email</h3>
+                                <a href="mailto:quangmanh01032006@gmail.com">
+                                    quangmanh01032006@gmail.com
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <span class="contact-icon">⌖</span>
+                            <div>
+                                <h3>Địa điểm</h3>
+                                <p>Thạnh Mỹ Tây, TP. Hồ Chí Minh</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <span class="contact-icon">GH</span>
+                            <div>
+                                <h3>GitHub</h3>
+                                <a href="https://github.com/quangmanh1801"
+                                    target="_blank" rel="noopener">
+                                    https://github.com/quangmanh1801
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <span class="contact-icon">f</span>
+                            <div>
+                                <h3>Facebook</h3>
+                                <a href="https://www.facebook.com/share/1CEvZGewEU/"
+                                    target="_blank" rel="noopener">
+                                    https://www.facebook.com/share/1CEvZGewEU/
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <span class="contact-icon">in</span>
+                            <div>
+                                <h3>LinkedIn</h3>
+                                <a href="https://www.linkedin.com/in/m%E1%BA%A1nh-hu%E1%BB%B3nh-a99503339"
+                                    target="_blank" rel="noopener">
+                                    www.linkedin.com/in/mạnh-huỳnh-a99503339
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <form id="contactForm" class="contact-form">
+                        <h3>Gửi lời nhắn cho mình</h3>
+
+                        <div class="form-group">
+                            <label for="name">Họ và tên</label>
+                            <input type="text" id="name"
+                                placeholder="Nhập họ và tên của bạn" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email"
+                                placeholder="Nhập địa chỉ email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Chủ đề</label>
+                            <input type="text" id="subject"
+                                placeholder="Nhập chủ đề" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Nội dung</label>
+                            <textarea id="message" rows="5"
+                                placeholder="Viết lời nhắn của bạn..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Gửi lời nhắn
+                        </button>
+
+                        <p id="formMessage" class="form-message"
+                            aria-live="polite"></p>
+                    </form>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <a href="#home" class="logo">QUANG<span>MANH.</span></a>
+
+            <p>
+                © 2026 Huỳnh Đoàn Quang Mạnh.
+                Designed with passion and dedication.
+            </p>
+
+            <a href="#home" class="back-to-top" aria-label="Về đầu trang">↑</a>
+        </div>
+    </footer>
+
+  
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const detailButtons = document.querySelectorAll(".project-detail-btn");
+            const modals = document.querySelectorAll(".project-modal");
+            const closeButtons = document.querySelectorAll(".project-modal-close");
+
+            function openModal(modalId) {
+                const modal = document.getElementById(modalId);
+
+                if (!modal) return;
+
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeModal(modal) {
+                if (!modal) return;
+
+                modal.classList.remove("active");
+                modal.setAttribute("aria-hidden", "true");
+                document.body.style.overflow = "";
+            }
+
+            detailButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    openModal(button.dataset.project);
+                });
+            });
+
+            closeButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    closeModal(button.closest(".project-modal"));
+                });
+            });
+
+            modals.forEach(function (modal) {
+                modal.addEventListener("click", function (event) {
+                    if (event.target === modal) {
+                        closeModal(modal);
+                    }
+                });
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape") {
+                    modals.forEach(function (modal) {
+                        if (modal.classList.contains("active")) {
+                            closeModal(modal);
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+
+    <script src="js/script.js"></script>
+
+</body>
+</html>
